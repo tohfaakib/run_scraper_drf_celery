@@ -121,7 +121,7 @@ def scrape_people(people_urls, movie_title, movie_url, driver):
         save_csv(movie_title, movie_url, people_url, name, title, known_for, phones, emails, websites, contact_block, about_block)
 
 
-def scrape_details(movie_urls, driver):
+def scrape_details(movie_urls, driver, category_id):
     for movie_url in movie_urls:
         movie_url = str(movie_url).split('?')[0] + '/filmmakers'
         driver.get(movie_url)
@@ -129,7 +129,8 @@ def scrape_details(movie_urls, driver):
         title = str(driver.find_element_by_id("title_heading").find_element_by_tag_name('span').text).strip()
         table = None
         try:
-            table = driver.find_element_by_id("title_filmmakers_music_department_sortable_table")
+            # table = driver.find_element_by_id("title_filmmakers_music_department_sortable_table")
+            table = driver.find_element_by_id(category_id)
         except Exception as e:
             # print(e)
             pass
@@ -151,7 +152,7 @@ def scrape_details(movie_urls, driver):
         # break
 
 
-def start(driver):
+def start(driver, category_id):
     cards = driver.find_elements_by_class_name("search-results__display-card")
     movie_urls = []
     for card in cards:
@@ -159,14 +160,14 @@ def start(driver):
         # print(movie_url)
         movie_urls.append(movie_url)
 
-    scrape_details(movie_urls, driver)
+    scrape_details(movie_urls, driver, category_id)
 
     time.sleep(20)
     # driver.close()
 
 
 # if __name__ == '__main__':
-def main(start_url, start_page_number):
+def main(start_url, start_page_number, category_id):
     driver = config_driver()
     # start_url = 'https://pro.imdb.com/discover/title?type=movie&status=production&sortOrder=MOVIEMETER_ASC&ref_=nv_tt_prod'
     print(start_url)
@@ -185,7 +186,7 @@ No matches found for your search
             driver.close()
             break
 
-        start(driver)
+        start(driver, category_id)
 
         break
     driver.close()

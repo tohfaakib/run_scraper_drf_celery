@@ -9,6 +9,6 @@ def sleepy(duration):
 
 
 @shared_task
-def start_tracking(start_url, start_page_number):
-    main(start_url, start_page_number)
+def start_tracking(start_url, start_page_number, category_id):
+    main(start_url, start_page_number, category_id)
 

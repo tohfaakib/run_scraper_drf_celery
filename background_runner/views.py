@@ -17,7 +17,7 @@ def index(request):
 
 class Entry(object):
     def __init__(self, **kwargs):
-        for field in ('start_url', 'start_page_number',):
+        for field in ('start_url', 'start_page_number', 'category_id',):
             setattr(self, field, kwargs.get(field, None))
 
 
@@ -27,16 +27,18 @@ class TriggerProcess(viewsets.ViewSet):
     def list(self, request):
         start_url = str(request.data['start_url'])
         start_page_number = str(request.data['start_page_number'])
+        category_id = str(request.data['category_id'])
 
         print(start_url)
         print(start_page_number)
-        if start_url and start_page_number:
+        print(category_id)
+        if start_url and start_page_number and category_id:
             print("calling..")
-            start_tracking.delay(start_url, start_page_number)
+            start_tracking.delay(start_url, start_page_number, category_id)
             # start_tracking(start_url, start_page_number)
 
         entries = {
-            1: Entry(start_url=start_url, start_page_number=start_page_number),
+            1: Entry(start_url=start_url, start_page_number=start_page_number, category_id=category_id),
         }
         serializer = TriggerSerializer(instance=entries.values(), many=True)
         return Response({'success': True, 'message': 'tracking started successfully.'})
